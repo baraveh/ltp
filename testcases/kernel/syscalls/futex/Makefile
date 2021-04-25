@@ -5,6 +5,8 @@ top_srcdir		?= ../../../..
 
 futex_cmp_requeue01: LDLIBS+=-lrt
 futex_cmp_requeue02: LDLIBS+=-lrt
+futex_wake01: CFLAGS+=-I/mnt/c/code/enclave_interface/compiler/stdlib/ -L/mnt/c/code/enclave_interface/spec/
+futex_wake01: LDLIBS+=-lpreload 
 futex_wait02: LDLIBS+=-lrt
 futex_wake03: LDLIBS+=-lrt
 futex_wait03: CFLAGS+=-pthread

@@ -20,11 +20,11 @@ static futex_t futex = FUTEX_INITIALIZER;
 static struct testcase testcases[] = {
 	/* nr_wake = 0 is noop */
 	{&futex, 0, 0},
-	{&futex, 0, FUTEX_PRIVATE_FLAG},
+	//{&futex, 0, FUTEX_PRIVATE_FLAG},
 	{&futex, 1, 0},
-	{&futex, 1, FUTEX_PRIVATE_FLAG},
+	//{&futex, 1, FUTEX_PRIVATE_FLAG},
 	{&futex, INT_MAX, 0},
-	{&futex, INT_MAX, FUTEX_PRIVATE_FLAG},
+	//{&futex, INT_MAX, FUTEX_PRIVATE_FLAG},
 };
 
 static struct futex_test_variants variants[] = {

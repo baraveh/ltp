@@ -19,6 +19,7 @@
 #include <linux/futex.h>
 #include "lapi/futex.h"
 #include "tst_timer.h"
+#include "sync_wrappers.h"
 
 #define FUTEX_INITIALIZER 0
 
@@ -110,6 +111,9 @@ static inline int futex_syscall(enum futex_fn_type fntype, futex_t *uaddr,
 				int futex_op, futex_t val, void *timeout,
 				futex_t *uaddr2, int val3, int opflags)
 {
+	if((futex_op == FUTEX_WAIT||futex_op == FUTEX_WAKE) && timeout == NULL)
+		return action_futex(uaddr, futex_op, val, timeout, uaddr2, val3);
+		
 	int (*func)(int *uaddr, int futex_op, int val, void *to, int *uaddr2, int val3);
 
 	if (fntype == FUTEX_FN_FUTEX)
