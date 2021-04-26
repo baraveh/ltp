@@ -1,3 +1,5 @@
+// PASSES WITH TEEVERIFY LIB
+
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
@@ -15,16 +17,23 @@ struct testcase {
 	int opflags;
 };
 
-static futex_t futex = FUTEX_INITIALIZER;
+// Modified to different futex for each thread since the threads aren't synced on who gets to init/destroy futex
+// Could work with one futex if the futex is initialized before pthread_create and destroyed after pthread_join, as done in futex_wait03.c
+static futex_t futex1 = FUTEX_INITIALIZER;
+static futex_t futex2 = FUTEX_INITIALIZER;
+static futex_t futex3 = FUTEX_INITIALIZER;
+static futex_t futex4 = FUTEX_INITIALIZER;
+static futex_t futex5 = FUTEX_INITIALIZER;
+static futex_t futex6 = FUTEX_INITIALIZER;
 
 static struct testcase testcases[] = {
 	/* nr_wake = 0 is noop */
-	{&futex, 0, 0},
-	//{&futex, 0, FUTEX_PRIVATE_FLAG},
-	{&futex, 1, 0},
-	//{&futex, 1, FUTEX_PRIVATE_FLAG},
-	{&futex, INT_MAX, 0},
-	//{&futex, INT_MAX, FUTEX_PRIVATE_FLAG},
+	{&futex1, 0, 0},
+	{&futex2, 0, FUTEX_PRIVATE_FLAG},
+	{&futex3, 1, 0},
+	{&futex4, 1, FUTEX_PRIVATE_FLAG},
+	{&futex5, INT_MAX, 0},
+	{&futex6, INT_MAX, FUTEX_PRIVATE_FLAG},
 };
 
 static struct futex_test_variants variants[] = {
@@ -41,6 +50,7 @@ static void run(unsigned int n)
 {
 	struct futex_test_variants *tv = &variants[tst_variant];
 	struct testcase *tc = &testcases[n];
+	action_futex_init(tc->f_addr);
 	int res;
 
 	res = futex_wake(tv->fntype, tc->f_addr, tc->nr_wake, tc->opflags);
@@ -48,7 +58,8 @@ static void run(unsigned int n)
 		tst_res(TFAIL | TERRNO, "futex_wake() failed");
 		return;
 	}
-
+	
+	action_futex_destroy(tc->f_addr);
 	tst_res(TPASS, "futex_wake() passed");
 }
 

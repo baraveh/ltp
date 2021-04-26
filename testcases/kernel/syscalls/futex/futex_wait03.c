@@ -1,3 +1,4 @@
+// PASSED WITH TEEVERIFY
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>
@@ -42,6 +43,7 @@ static void run(void)
 	struct futex_test_variants *tv = &variants[tst_variant];
 	long res, pid = getpid();
 	pthread_t t;
+	action_futex_init(&futex);
 
 	SAFE_PTHREAD_CREATE(&t, NULL, threaded, (void*)pid);
 
@@ -53,6 +55,7 @@ static void run(void)
 	}
 
 	SAFE_PTHREAD_JOIN(t, NULL);
+	action_futex_destroy(&futex);
 	tst_res(TPASS, "futex_wait() woken up");
 }
 

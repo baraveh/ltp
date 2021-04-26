@@ -1,3 +1,5 @@
+// PASSES WITH TEEVERIFY LIB
+
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
  * Copyright (C) 2015 Cyril Hrubis <chrubis@suse.cz>

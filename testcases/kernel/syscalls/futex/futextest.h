@@ -111,17 +111,7 @@ static inline int futex_syscall(enum futex_fn_type fntype, futex_t *uaddr,
 				int futex_op, futex_t val, void *timeout,
 				futex_t *uaddr2, int val3, int opflags)
 {
-	if((futex_op == FUTEX_WAIT||futex_op == FUTEX_WAKE) && timeout == NULL)
-		return action_futex(uaddr, futex_op, val, timeout, uaddr2, val3);
-		
-	int (*func)(int *uaddr, int futex_op, int val, void *to, int *uaddr2, int val3);
-
-	if (fntype == FUTEX_FN_FUTEX)
-		func = sys_futex;
-	else
-		func = sys_futex_time64;
-
-	return func((int *)uaddr, futex_op | opflags, val, timeout, (int *)uaddr2, val3);
+	return action_futex(uaddr, futex_op | opflags, val, timeout, uaddr2, val3);
 }
 
 /**
@@ -281,7 +271,7 @@ futex_cmp_requeue_pi(enum futex_fn_type fntype, futex_t *uaddr, futex_t val,
 static inline u_int32_t
 futex_cmpxchg(futex_t *uaddr, u_int32_t oldval, u_int32_t newval)
 {
-	return __sync_val_compare_and_swap(uaddr, oldval, newval);
+	return action_futex_exchng(uaddr, oldval, newval);
 }
 
 /**
